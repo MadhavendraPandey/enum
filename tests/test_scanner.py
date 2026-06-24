@@ -78,3 +78,17 @@ class TestAssetScanner:
 
         assert isinstance(results, dict)
         assert "google.com" in results
+
+    def test_security_analyzer(self):
+        """Test security vulnerability analysis"""
+        from src.security import VulnerabilityAnalyzer
+
+        analyzer = VulnerabilityAnalyzer()
+        port_results = {"test.com": [22, 3306, 80]}  # SSH, MySQL, HTTP
+
+        findings = analyzer.analyze_ports(port_results)
+        summary = analyzer.get_summary()
+
+        assert len(findings) == 3
+        assert summary["critical"] >= 1  # MySQL is critical
+        assert summary["high"] >= 1  # SSH is high
