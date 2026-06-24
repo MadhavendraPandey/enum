@@ -25,7 +25,6 @@ class TestAssetScanner:
     @patch("src.scanner.requests.get")
     def test_enumerate_subdomains_with_mock(self, mock_get):
         """Test subdomain enumeration with mocked API response"""
-        # Mock the response
         mock_response = MagicMock()
         mock_response.json.return_value = [
             {"name_value": "google.com\nwww.google.com\napi.google.com"},
@@ -43,7 +42,6 @@ class TestAssetScanner:
     def test_enumerate_subdomains_mock_fallback(self):
         """Test fallback when crt.sh fails"""
         scanner = AssetScanner("test.com")
-        # Manually set subdomains like fallback would
         scanner.subdomains = [
             "test.com",
             "www.test.com",
@@ -71,13 +69,12 @@ class TestAssetScanner:
 
         assert data["domain"] == "example.com"
         assert len(data["subdomains"]) == 2
-        assert data["total"] == 2
+        assert data["total_subdomains"] == 2  # Fixed: was "total"
 
+    def test_scan_ports_mock(self):  # Now inside class
+        """Test port scanning"""
+        scanner = AssetScanner("example.com")
+        results = scanner.scan_ports(hosts=["google.com"], ports=[80, 443])
 
-def test_scan_ports_mock(self):
-    """Test port scanning"""
-    scanner = AssetScanner("example.com")
-    results = scanner.scan_ports(hosts=["google.com"], ports=[80, 443])
-
-    assert isinstance(results, dict)
-    assert "google.com" in results
+        assert isinstance(results, dict)
+        assert "google.com" in results
